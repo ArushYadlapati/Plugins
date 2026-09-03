@@ -45,7 +45,7 @@ It is recommended to get this via applying the `TeamCode` plugin below.
 otherwise:
 ```kt
 dependencies {
-    implementation("com.qualcomm.ftcrobotcontroller:FtcRobotController:11.1.0")
+    implementation("com.qualcomm.ftcrobotcontroller:FtcRobotController:11.2.1")
 }
 ```
 
@@ -58,7 +58,7 @@ how to use it.
 
 ```kt
 dependencies {
-    implementation("dev.frozenmilk:EasyAutoLibraries:1.1.2")
+    implementation("dev.frozenmilk:EasyAutoLibraries:1.2.0")
 }
 ```
 
@@ -70,7 +70,7 @@ A plugin that makes it easy to set up FTC related libraries, uses
 
 ```kt
 plugins {
-    id("dev.frozenmilk.ftc-libraries") version "11.1.0-1.1.1"
+    id("dev.frozenmilk.ftc-libraries") version "11.2.1-1.2.0"
 }
 ```
 
@@ -95,10 +95,10 @@ ftc {
         // this adds RobotCore to implementation
         implementation(RobotCore)
         // we can also specify a version
-        implementation(FtcCommon("11.1.0"))
+        implementation(FtcCommon("11.2.1"))
 
         // the sdk block specifically has a shared version
-        version = "11.1.0"
+        version = "11.2.1"
         // once you change it,
         // all un-specified versions for sdk dependencies will have this version
         // note that changing it won't affect previous actions
@@ -106,7 +106,7 @@ ftc {
         // the sdk block also has a TeamCode function
         TeamCode()
         // or:
-        TeamCode("11.1.0")
+        TeamCode("11.2.1")
         // these functions are recommended for use in team code modules,
         // as they provide all the dependencies for you, rather than manually
         // specifying it
@@ -162,7 +162,7 @@ ftc {
         implementation(roadrunner)
         implementation(fateweaver)
     }
-  
+
     // the next.v2 block contains nextftc v2 dependencies
     next.v2 {
         // core libraries
@@ -224,7 +224,7 @@ ftc {
         implementation(core)
         implementation(ftc)
     }
-    
+
     // the marrow block containing the marrow library
     marrow {
         // marrow doesn't have any dependencies other than the core
@@ -248,7 +248,7 @@ See the templates repository for examples.
 
 ```kt
 plugins {
-    id("dev.frozenmilk.teamcode") version "11.1.0-1.1.1"
+    id("dev.frozenmilk.teamcode") version "11.2.1-1.2.0"
 }
 ```
 
@@ -263,7 +263,7 @@ See the templates repository for examples.
 
 ```kt
 plugins {
-    id("dev.frozenmilk.android-library") version "11.1.0-1.1.1"
+    id("dev.frozenmilk.android-library") version "11.2.1-1.2.0"
 }
 ```
 
@@ -277,7 +277,7 @@ See the templates repository for examples.
 
 ```kt
 plugins {
-    id("dev.frozenmilk.jvm-library") version "11.1.0-1.1.1"
+    id("dev.frozenmilk.jvm-library") version "11.2.1-1.2.0"
 }
 ```
 
@@ -292,7 +292,7 @@ hashes.
 
 ```kt
 plugins {
-    id("dev.frozenmilk.publish") version "0.0.5"
+    id("dev.frozenmilk.publish") version "0.1.0"
 }
 ```
 
@@ -308,7 +308,7 @@ Makes it easy to add javadoc and html jars to publications.
 
 ```kt
 plugins {
-    id("dev.frozenmilk.doc") version "0.0.5"
+    id("dev.frozenmilk.doc") version "0.1.0"
     // publication plugin required, try the one above!
 }
 
@@ -343,9 +343,9 @@ used to generate a metadata object at compile time.
 
 ```kt
 plugins {
-    id("dev.frozenmilk.build-meta-data") version "0.0.2"
+    id("dev.frozenmilk.build-meta-data") version "0.1.0"
     // for example, to embed git meta data:
-    id("dev.frozenmilk.publish") version "0.0.5"
+    id("dev.frozenmilk.publish") version "0.1.0"
 }
 
 meta {
