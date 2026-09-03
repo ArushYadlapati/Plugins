@@ -2,7 +2,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-version = "11.2.0"
+version = "11.2.1"
 
 plugins {
     //noinspection AndroidGradlePluginVersion

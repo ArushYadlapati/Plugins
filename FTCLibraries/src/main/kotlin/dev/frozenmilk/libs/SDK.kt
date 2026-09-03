@@ -6,7 +6,7 @@ import dev.frozenmilk.easyautolibraries.EasyAutoScope
 
 @Suppress("unused", "PropertyName", "FunctionName")
 class SDK(ftc: FTC) : EasyAutoScope<SDK>(ftc) {
-    var version = "11.2.0"
+    var version = "11.2.1"
 
     private val sdkModule = dependency { name ->
         EasyAutoDependency(
@@ -26,6 +26,7 @@ class SDK(ftc: FTC) : EasyAutoScope<SDK>(ftc) {
         androidVersionCodesAndNames["11.0.0"] = 60 to "11.0"
         androidVersionCodesAndNames["11.1.0"] = 61 to "11.1"
         androidVersionCodesAndNames["11.2.0"] = 62 to "11.2"
+        androidVersionCodesAndNames["11.2.1"] = 63 to "11.2.1"
     }
 
     fun androidVersionCodeAndName(version: String, code: Int, name: String) {
