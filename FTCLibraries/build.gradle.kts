@@ -24,7 +24,7 @@ kotlin {
 }
 
 dependencies {
-    api("dev.frozenmilk:EasyAutoLibraries:1.1.2")
+    api("dev.frozenmilk:EasyAutoLibraries:1.2.0")
 }
 
 dairyPublishing {
