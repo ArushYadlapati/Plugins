@@ -7,7 +7,7 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "2.3.0"
+    id("org.jetbrains.kotlin.jvm") version "2.4.10"
     id("java-gradle-plugin")
     id("dev.frozenmilk.publish")
 }
@@ -15,12 +15,11 @@ plugins {
 group = "dev.frozenmilk"
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(25)
     compilerOptions {
         freeCompilerArgs.add("-Xreturn-value-checker=full")
         jvmDefault.set(JvmDefaultMode.NO_COMPATIBILITY)
     }
-    coreLibrariesVersion = "1.9.24"
 }
 
 dependencies {

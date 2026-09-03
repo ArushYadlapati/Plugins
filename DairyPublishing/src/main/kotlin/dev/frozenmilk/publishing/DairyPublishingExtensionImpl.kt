@@ -7,27 +7,41 @@ import org.gradle.api.provider.Property
 import org.gradle.api.publish.plugins.PublishingPlugin
 import org.gradle.api.reflect.HasPublicType
 import org.gradle.api.reflect.TypeOf
+import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
 import java.net.URI
+import javax.inject.Inject
 
 @Suppress("MemberVisibilityCanBePrivate")
-abstract class DairyPublishingExtensionImpl (private val project: Project) : DairyPublishingExtension, HasPublicType {
-    override fun getPublicType(): TypeOf<DairyPublishingExtension> = TypeOf.typeOf(DairyPublishingExtension::class.java)/**
+abstract class DairyPublishingExtensionImpl @Inject constructor(
+    private val project: Project,
+    private val exec: ExecOperations,
+) : DairyPublishingExtension, HasPublicType {
+    override fun getPublicType(): TypeOf<DairyPublishingExtension> =
+        TypeOf.typeOf(DairyPublishingExtension::class.java)
+
+    /**
      * the directory that contains the `.git` directory, by default this is the root project directory
      */
     override val gitDir: DirectoryProperty = project.objects.directoryProperty()
+
     /**
      * the name of the `git` executable, by default this is "git"
      */
-    override val gitExecutable: Property<String> = project.objects.property(String::class.java).apply { set("git") }
+    override val gitExecutable: Property<String> =
+        project.objects.property(String::class.java).apply { set("git") }
+
     /**
      * the repository name, by default this is "Dairy"
      */
-    override val repositoryName: Property<String> = project.objects.property(String::class.java).apply { set("Dairy") }
+    override val repositoryName: Property<String> =
+        project.objects.property(String::class.java).apply { set("Dairy") }
+
     /**
      * the uri of the releases repository, by default this is the dairy releases repository
      */
     override val releasesRepository: Property<URI> = project.objects.property(URI::class.java)
+
     /**
      * the uri of the snapshots repository, by default this is the dairy snapshots repository
      */
@@ -35,32 +49,33 @@ abstract class DairyPublishingExtensionImpl (private val project: Project) : Dai
 
     private val configurationActions = mutableListOf<Action<DairyPublishingExtensionImpl>>()
 
-    private var _gitRef = ""
+    private val gitData = project.providers.of(GitDataValueSource::class.java) {
+        it.parameters.gitDir.set(gitDir)
+        it.parameters.gitExecutable.set(gitExecutable)
+    }
+
     override val gitRef: String
         get() {
             finalize()
-            return _gitRef
+            return gitData.get().ref
         }
 
-    private var _version = ""
     override val version: String
         get() {
             finalize()
-            return _version
+            return gitData.get().version
         }
 
-    private var _clean = false
     override val clean: Boolean
         get() {
             finalize()
-            return _clean
+            return gitData.get().clean
         }
 
-    private var _snapshot = false
     override val snapshot: Boolean
         get() {
             finalize()
-            return _snapshot
+            return gitData.get().snapshot
         }
 
     /**
@@ -85,63 +100,14 @@ abstract class DairyPublishingExtensionImpl (private val project: Project) : Dai
         repositoryName.finalizeValue()
         releasesRepository.finalizeValue()
         snapshotsRepository.finalizeValue()
+        gitData.get()
 
-        project.run {
-            val clean = run {
-                val sout = ByteArrayOutputStream()
-                exec {it.run {
-                    workingDir = gitDir.get().asFile
-                    standardOutput = sout
-                    commandLine(gitExecutable.get(), "status", "--porcelain")
-                }}.assertNormalExitValue()
-                sout.toString()
-            }.isBlank()
-
-            if (!clean) {
-                tasks.all {
-                    if (it.group == PublishingPlugin.PUBLISH_TASK_GROUP) {
-                        it.doFirst {
-                            throw UncleanWorkingTree()
-                        }
-                    }
+        if (!clean) project.tasks.all {
+            if (it.group == PublishingPlugin.PUBLISH_TASK_GROUP) {
+                it.doFirst {
+                    throw UncleanWorkingTree()
                 }
             }
-
-            val tags = run {
-                val out = ByteArrayOutputStream()
-                exec {it.run {
-                    workingDir = gitDir.get().asFile
-                    standardOutput = out
-                    commandLine(gitExecutable.get(), "tag", "--points-at", "HEAD")
-                }}.assertNormalExitValue()
-                out.toString().trim()
-            }
-
-            _snapshot = if (tags.isBlank()) {
-                val hash = run {
-                    val sout = ByteArrayOutputStream()
-                    exec {it.run {
-                        workingDir = gitDir.get().asFile
-                        standardOutput = sout
-                        commandLine(gitExecutable.get(), "rev-parse", "--short", "HEAD")
-                    }}.assertNormalExitValue()
-                    sout.toString().trim()
-                }.ifBlank { throw UnknownError("unable to determine hashcode for HEAD, this shouldn't be reachable") }
-                _gitRef = hash
-                _version = "SNAPSHOT-$hash"
-                true
-            }
-            else {
-                // first tag
-                val tag = tags.split('\n').also {
-                    if (it.size != 1) logger.warn("Found multiple tags for HEAD:\n$tags\nSelected the first one: ${it.first().trim()}")
-                }.first().trim()
-                _gitRef = tag
-                _version = tag
-                false
-            }
-
-            version = _version
         }
     }
 }

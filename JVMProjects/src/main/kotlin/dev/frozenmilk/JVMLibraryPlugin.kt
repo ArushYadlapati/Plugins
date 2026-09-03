@@ -23,7 +23,7 @@ class JVMLibraryPlugin @Inject constructor(
 
             project.tasks.withType(Test::class.java).configureEach { testTask ->
                 testTask.javaLauncher.set(javaToolchainService.launcherFor {
-                    it.languageVersion.set(JavaLanguageVersion.of(21))
+                    it.languageVersion.set(JavaLanguageVersion.of(25))
                 })
             }
 

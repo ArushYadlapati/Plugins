@@ -23,14 +23,19 @@ class DairyPublishingPlugin : Plugin<Project> {
         extension.releasesRepository.set(uri("https://repo.dairy.foundation/releases"))
         extension.snapshotsRepository.set(uri("https://repo.dairy.foundation/snapshots"))
 
-        tasks.create("displayVersion") {it.run {
-            group = "Help"
-            doLast {
-                println(version)
-            }
-        }}
+        val token = providers.environmentVariable("DAIRY_TOKEN")
+        val password = providers.environmentVariable("DAIRY_PASSWORD")
 
         afterEvaluate {
+            extension.finalize()
+            project.version = extension.version
+            val version = extension.version
+
+            tasks.register("displayVersion") { task ->
+                task.group = "Help"
+                task.doLast { println(version) }
+            }
+
             extensions.getByType(PublishingExtension::class.java).run {
                 repositories.run {
                     maven {it.run {
@@ -39,7 +44,14 @@ class DairyPublishingPlugin : Plugin<Project> {
                             if (extension.snapshot) extension.snapshotsRepository.get()
                             else extension.releasesRepository.get()
                         )
-                        credentials(PasswordCredentials::class.java)
+
+                        if (token.isPresent && password.isPresent) {
+                            credentials { credentials ->
+                                credentials.username = token.get()
+                                credentials.password = password.get()
+                            }
+                        }
+                        else credentials(PasswordCredentials::class.java)
                         authentication.create("basic", BasicAuthentication::class.java)
                     }}
                 }

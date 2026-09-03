@@ -11,7 +11,7 @@ abstract class BuildMetaDataExtension {
      */
     var packagePath: String
         get() = run {
-            check(packagePathProperty.isPresent && packagePathProperty.get() != null) { "meta.packagePath not set" }
+            check(packagePathProperty.isPresent) { "meta.packagePath not set" }
             packagePathProperty.get()
         }
         set(value) {
@@ -25,7 +25,7 @@ abstract class BuildMetaDataExtension {
      */
     var name: String
         get() = run {
-            check(nameProperty.isPresent && nameProperty.get() != null) { "meta.name not set" }
+            check(nameProperty.isPresent) { "meta.name not set" }
             nameProperty.get()
         }
         set(value) {
