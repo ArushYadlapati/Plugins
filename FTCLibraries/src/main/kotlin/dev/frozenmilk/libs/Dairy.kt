@@ -31,7 +31,7 @@ class Dairy(ftc: FTC) : EasyAutoScope<Dairy>(ftc) {
     // Sinister
     //
 
-    val slothVersion = "0.3.1"
+    val slothVersion = "0.3.2"
 
     val Sinister by dependency {
         EasyAutoDependency(
@@ -66,7 +66,7 @@ class Dairy(ftc: FTC) : EasyAutoScope<Dairy>(ftc) {
         EasyAutoDependency(
             group = "com.bylazar.sloth",
             artifact = name,
-            defaultVersion = { "0.2.4.1+$version" },
+            defaultVersion = { "$slothVersion+$version" },
         ) {
             fun incompatibleWithFtControl(dependency: EasyAutoDependency) {
                 incompatibleWith(
